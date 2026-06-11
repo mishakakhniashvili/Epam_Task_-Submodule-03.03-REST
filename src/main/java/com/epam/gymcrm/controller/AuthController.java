@@ -1,14 +1,13 @@
 package com.epam.gymcrm.controller;
 
+import com.epam.gymcrm.dto.ChangePasswordRequest;
 import com.epam.gymcrm.exception.AuthenticationException;
 import com.epam.gymcrm.facade.GymFacade;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -36,5 +35,34 @@ public class AuthController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request){
+        LOGGER.info("changePassword request received for username={}", request.getUsername());
+
+        String newPassword = request.getNewPassword();
+        String oldPassword = request.getOldPassword();
+        String username = request.getUsername();
+
+        boolean traineeValid = gymFacade.isTraineeCredentialsValid(username, oldPassword);
+        if (traineeValid) {
+            gymFacade.changeTraineePassword(username, oldPassword, newPassword);
+
+            LOGGER.info("password changed for username={}", username);
+
+            return ResponseEntity.ok().build();
+        }
+
+        boolean trainerValid = gymFacade.isTrainerCredentialsValid(username, oldPassword);
+        if (trainerValid) {
+            gymFacade.changeTrainerPassword(username, oldPassword, newPassword);
+
+            LOGGER.info("password changed for username={}", username);
+
+            return ResponseEntity.ok().build();
+        }
+
+        throw new AuthenticationException("Invalid credentials");
     }
 }
