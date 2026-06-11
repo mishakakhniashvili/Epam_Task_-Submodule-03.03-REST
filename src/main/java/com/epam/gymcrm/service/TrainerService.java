@@ -1,10 +1,13 @@
 package com.epam.gymcrm.service;
 
 import com.epam.gymcrm.entity.Trainer;
+import com.epam.gymcrm.entity.TrainingType;
 import com.epam.gymcrm.entity.User;
 import com.epam.gymcrm.exception.AuthenticationException;
+import com.epam.gymcrm.exception.EntityNotFoundException;
 import com.epam.gymcrm.exception.ValidationException;
 import com.epam.gymcrm.repository.TrainerRepository;
+import com.epam.gymcrm.repository.TrainingTypeRepository;
 import com.epam.gymcrm.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +27,7 @@ public class TrainerService {
     private UsernameGenerator usernameGenerator;
     private PasswordGenerator passwordGenerator;
     private UserRepository userRepository;
+    private TrainingTypeRepository trainingTypeRepository;
 
     @Autowired
     public void setTrainerRepository(TrainerRepository trainerRepository) {
@@ -44,6 +48,12 @@ public class TrainerService {
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Autowired
+    public void setTrainingTypeRepository(TrainingTypeRepository trainingTypeRepository) {
+        this.trainingTypeRepository = trainingTypeRepository;
+    }
+
     @Transactional
     public Trainer create(Trainer trainer) {
         validateTrainerRequiredFields(trainer);
@@ -169,5 +179,30 @@ public class TrainerService {
         if (value == null || value.isBlank()) {
             throw new ValidationException(fieldName + " cannot be null or blank");
         }
+    }
+
+    @Transactional
+    public Trainer create( String firstName, String lastName, String specializationName) {
+        validateRequiredString(firstName, "firstName");
+        validateRequiredString(lastName, "lastName");
+        validateRequiredString(specializationName, "specializationName");
+        TrainingType specialization = trainingTypeRepository.findByName(specializationName).orElseThrow(
+                () -> new EntityNotFoundException("trainingType", specializationName)
+        );
+
+        User user = new User(
+                firstName,
+                lastName,
+                null,
+                null,
+                false
+        );
+
+        Trainer trainer = new Trainer(
+                user,
+                specialization
+        );
+
+        return create(trainer);
     }
 }

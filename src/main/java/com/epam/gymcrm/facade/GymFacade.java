@@ -31,12 +31,17 @@ public class GymFacade {
         return traineeService.create(trainee);
     }
 
+
     public Trainee updateTrainee(String username, String password, Trainee trainee) {
         return traineeService.update(username, password, trainee);
     }
 
     public Trainer createTrainer(Trainer trainer) {
         return trainerService.create(trainer);
+    }
+
+    public Trainer createTrainer(String firstName, String lastName, String specializationName) {
+        return trainerService.create(firstName, lastName, specializationName);
     }
 
     public Trainer updateTrainer(String username, String password, Trainer trainer) {
