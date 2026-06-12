@@ -1,10 +1,13 @@
 package com.epam.gymcrm.controller;
 
 import com.epam.gymcrm.dto.RegistrationResponse;
+import com.epam.gymcrm.dto.TraineeProfileResponse;
 import com.epam.gymcrm.dto.TraineeRegistrationRequest;
 import com.epam.gymcrm.entity.Trainee;
 import com.epam.gymcrm.entity.User;
+import com.epam.gymcrm.exception.EntityNotFoundException;
 import com.epam.gymcrm.facade.GymFacade;
+import com.epam.gymcrm.mapper.TraineeMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +23,11 @@ public class TraineeController {
 
     private final GymFacade gymFacade;
 
-    public TraineeController(GymFacade gymFacade) {
+    private final TraineeMapper traineeMapper;
+
+    public TraineeController(GymFacade gymFacade,  TraineeMapper traineeMapper) {
         this.gymFacade = gymFacade;
+        this.traineeMapper = traineeMapper;
     }
 
     @PostMapping("/register")
@@ -57,4 +63,21 @@ public class TraineeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<TraineeProfileResponse> getTraineeProfile(
+            @RequestParam String username,
+            @RequestParam String password
+    ){
+        LOGGER.info("Trainee profile request received for username={}", username);
+
+        Trainee trainee = gymFacade.findTraineeByUsername(username, password, username).orElseThrow(
+                () -> new EntityNotFoundException("Trainee" , username)
+        );
+
+        TraineeProfileResponse response = traineeMapper.toProfileResponse(trainee);
+        LOGGER.info("Trainee profile successfully retrieved for username={}", username);
+        return ResponseEntity.ok(response);
+    }
+
 }
