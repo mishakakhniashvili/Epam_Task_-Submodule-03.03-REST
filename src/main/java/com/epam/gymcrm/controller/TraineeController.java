@@ -102,4 +102,18 @@ public class TraineeController {
 
         return  ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/profile")
+    public ResponseEntity<Void> deleteTraineeProfile(
+            @RequestParam String username,
+            @RequestParam String password
+    ){
+        LOGGER.info("Trainee profile delete request received for username={}", username);
+
+        gymFacade.deleteTraineeByUsername(username, password);
+
+        LOGGER.info("Trainee profile successfully deleted for username={}", username);
+
+        return ResponseEntity.ok().build();
+    }
 }
