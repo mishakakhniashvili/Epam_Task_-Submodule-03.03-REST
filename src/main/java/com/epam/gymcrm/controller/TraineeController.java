@@ -3,6 +3,7 @@ package com.epam.gymcrm.controller;
 import com.epam.gymcrm.dto.RegistrationResponse;
 import com.epam.gymcrm.dto.TraineeProfileResponse;
 import com.epam.gymcrm.dto.TraineeRegistrationRequest;
+import com.epam.gymcrm.dto.TraineeUpdateRequest;
 import com.epam.gymcrm.entity.Trainee;
 import com.epam.gymcrm.entity.User;
 import com.epam.gymcrm.exception.EntityNotFoundException;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/trainees")
@@ -80,4 +83,23 @@ public class TraineeController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/profile")
+    public ResponseEntity<TraineeProfileResponse> updateTraineeProfile(
+            @RequestParam String password,
+            @Valid @RequestBody TraineeUpdateRequest request
+            ){
+        LOGGER.info("Trainee profile update request received for username={}", request.getUsername());
+        Trainee trainee = gymFacade.updateProfile(
+                request.getUsername(),
+                password,
+                request.getFirstName(),
+                request.getLastName(),
+                request.getDateOfBirth(),
+                request.getAddress(),
+                request.getActive()
+        );
+        TraineeProfileResponse response = traineeMapper.toProfileResponse(trainee);
+
+        return  ResponseEntity.ok(response);
+    }
 }

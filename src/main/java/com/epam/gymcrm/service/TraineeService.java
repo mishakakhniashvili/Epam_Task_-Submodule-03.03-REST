@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -226,5 +227,37 @@ public class TraineeService {
         if (value == null || value.isBlank()) {
             throw new ValidationException(fieldName + " cannot be null or blank");
         }
+    }
+
+    @Transactional
+    public Trainee updateProfile(
+            String username,
+            String password,
+            String firstName,
+            String lastName,
+            LocalDate dateOfBirth,
+            String address,
+            Boolean active)
+    {
+        validateRequiredString(username, "username");
+        validateRequiredString(password, "password");
+        validateRequiredString(firstName, "firstName");
+        validateRequiredString(lastName, "lastName");
+        validateCredentials(username, password);
+        if (active == null) {
+            throw new ValidationException("active cannot be null");
+        }
+        Trainee trainee = traineeRepository.findByUserUsername(username).orElseThrow(
+                () -> new EntityNotFoundException("trainee", username)
+        );
+
+
+        trainee.getUser().setFirstName(firstName);
+        trainee.getUser().setLastName(lastName);
+        trainee.getUser().setActive(active);
+        trainee.setDateOfBirth(dateOfBirth);
+        trainee.setAddress(address);
+
+        return traineeRepository.save(trainee);
     }
 }
