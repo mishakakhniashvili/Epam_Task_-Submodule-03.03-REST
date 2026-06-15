@@ -94,4 +94,25 @@ public class TrainerController {
         return  ResponseEntity.ok(response);
     }
 
+
+    @PatchMapping("/status")
+    public ResponseEntity<Void> updateTrainerStatus(
+            @RequestParam String password,
+            @Valid @RequestBody ActivationRequest request
+    ){
+        LOGGER.info("Trainer status update request received for username={}", request.getUsername());
+
+        if(request.getActive()){
+            gymFacade.activateTrainer(request.getUsername(),  password);
+        }
+        else{
+            gymFacade.deactivateTrainer(request.getUsername(), password);
+        }
+
+        LOGGER.info("Trainer status successfully updated for username={}", request.getUsername());
+
+        return ResponseEntity.ok().build();
+    }
+
+
 }

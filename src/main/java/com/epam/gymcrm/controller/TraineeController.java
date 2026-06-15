@@ -1,5 +1,6 @@
 package com.epam.gymcrm.controller;
 
+import com.epam.gymcrm.dto.ActivationRequest;
 import com.epam.gymcrm.dto.RegistrationResponse;
 import com.epam.gymcrm.dto.trainee.TraineeProfileResponse;
 import com.epam.gymcrm.dto.trainee.TraineeRegistrationRequest;
@@ -116,6 +117,23 @@ public class TraineeController {
 
         return ResponseEntity.ok().build();
     }
+    @PatchMapping("/status")
+    public ResponseEntity<Void> updateTraineeStatus(
+            @RequestParam String password,
+            @Valid @RequestBody ActivationRequest request
+    ){
+        LOGGER.info("Trainee status update request received for username={}", request.getUsername());
 
+        if(request.getActive()){
+            gymFacade.activateTrainee(request.getUsername(),  password);
+        }
+        else{
+            gymFacade.deactivateTrainee(request.getUsername(), password);
+        }
+
+        LOGGER.info("Trainee status successfully updated for username={}", request.getUsername());
+
+        return ResponseEntity.ok().build();
+    }
 
 }
