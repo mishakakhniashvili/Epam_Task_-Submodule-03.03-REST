@@ -5,17 +5,22 @@ import com.epam.gymcrm.dto.RegistrationResponse;
 import com.epam.gymcrm.dto.trainee.TraineeProfileResponse;
 import com.epam.gymcrm.dto.trainee.TraineeRegistrationRequest;
 import com.epam.gymcrm.dto.trainee.TraineeUpdateRequest;
+import com.epam.gymcrm.dto.trainer.TrainerShortResponse;
 import com.epam.gymcrm.entity.Trainee;
+import com.epam.gymcrm.entity.Trainer;
 import com.epam.gymcrm.entity.User;
 import com.epam.gymcrm.exception.EntityNotFoundException;
 import com.epam.gymcrm.facade.GymFacade;
 import com.epam.gymcrm.mapper.TraineeMapper;
+import com.epam.gymcrm.mapper.TrainerMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/trainees")
@@ -27,9 +32,12 @@ public class TraineeController {
 
     private final TraineeMapper traineeMapper;
 
-    public TraineeController(GymFacade gymFacade,  TraineeMapper traineeMapper) {
+    private final TrainerMapper trainerMapper;
+
+    public TraineeController(GymFacade gymFacade,  TraineeMapper traineeMapper,  TrainerMapper trainerMapper) {
         this.gymFacade = gymFacade;
         this.traineeMapper = traineeMapper;
+        this.trainerMapper = trainerMapper;
     }
 
     @PostMapping("/register")
@@ -136,4 +144,19 @@ public class TraineeController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/not-assigned-trainers")
+    public ResponseEntity<List<TrainerShortResponse>> getNotAssignedTrainers(
+            @RequestParam String username,
+            @RequestParam String password
+    ){
+        LOGGER.info("Trainee not assigned trainers request received for username= {}", username);
+
+        List<Trainer> trainers = gymFacade.getTrainersNotAssignedToTrainee(username, password);
+
+        List<TrainerShortResponse> response = trainers.stream()
+                .map(trainerMapper::toShortResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
 }

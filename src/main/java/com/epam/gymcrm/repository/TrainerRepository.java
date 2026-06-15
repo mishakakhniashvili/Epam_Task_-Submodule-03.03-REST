@@ -21,7 +21,8 @@ public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     @Query("""
             select trainer
             from Trainer trainer
-            where trainer not in (
+            where trainer.user.active = true
+                and trainer not in (
                 select assignedTrainer
                 from Trainee trainee
                 join trainee.trainers assignedTrainer

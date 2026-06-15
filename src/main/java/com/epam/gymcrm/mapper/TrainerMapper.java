@@ -2,6 +2,7 @@ package com.epam.gymcrm.mapper;
 
 import com.epam.gymcrm.dto.trainee.TraineeShortResponse;
 import com.epam.gymcrm.dto.trainer.TrainerProfileResponse;
+import com.epam.gymcrm.dto.trainer.TrainerShortResponse;
 import com.epam.gymcrm.entity.Trainer;
 import com.epam.gymcrm.entity.User;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,15 @@ public class TrainerMapper {
                 trainer.getSpecialization().getTrainingTypeName(),
                 user.isActive(),
                 trainees
+        );
+    }
+
+    public TrainerShortResponse toShortResponse(Trainer trainer){
+        return new TrainerShortResponse(
+                trainer.getUser().getUsername(),
+                trainer.getUser().getFirstName(),
+                trainer.getUser().getLastName(),
+                trainer.getSpecialization().getTrainingTypeName()
         );
     }
 }
