@@ -146,7 +146,7 @@ public class TraineeService {
     public void activate(String username, String password){
         validateCredentials(username, password);
         Trainee trainee = traineeRepository.findByUserUsername(username).orElseThrow();
-        if(trainee.getUser().isActive()){throw new IllegalStateException("Trainee is already active.");}
+        if(trainee.getUser().isActive()){throw new IllegalStateException("Traineeis already active.");}
         trainee.getUser().setActive(true);
         traineeRepository.save(trainee);
         LOGGER.info("Activated trainee with id={}", trainee.getId());

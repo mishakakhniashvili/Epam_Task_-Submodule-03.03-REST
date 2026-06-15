@@ -1,6 +1,9 @@
 package com.epam.gymcrm.controller;
 
 import com.epam.gymcrm.dto.*;
+import com.epam.gymcrm.dto.trainer.TrainerProfileResponse;
+import com.epam.gymcrm.dto.trainer.TrainerRegistrationRequest;
+import com.epam.gymcrm.dto.trainer.TrainerUpdateRequest;
 import com.epam.gymcrm.entity.Trainer;
 import com.epam.gymcrm.exception.EntityNotFoundException;
 import com.epam.gymcrm.facade.GymFacade;

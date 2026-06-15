@@ -1,4 +1,4 @@
-package com.epam.gymcrm.dto;
+package com.epam.gymcrm.dto.trainer;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

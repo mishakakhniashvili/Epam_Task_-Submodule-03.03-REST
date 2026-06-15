@@ -1,7 +1,7 @@
 package com.epam.gymcrm.mapper;
 
-import com.epam.gymcrm.dto.TraineeShortResponse;
-import com.epam.gymcrm.dto.TrainerProfileResponse;
+import com.epam.gymcrm.dto.trainee.TraineeShortResponse;
+import com.epam.gymcrm.dto.trainer.TrainerProfileResponse;
 import com.epam.gymcrm.entity.Trainer;
 import com.epam.gymcrm.entity.User;
 import org.springframework.stereotype.Component;

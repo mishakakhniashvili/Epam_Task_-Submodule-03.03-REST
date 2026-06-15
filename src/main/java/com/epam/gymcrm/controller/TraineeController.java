@@ -1,9 +1,9 @@
 package com.epam.gymcrm.controller;
 
 import com.epam.gymcrm.dto.RegistrationResponse;
-import com.epam.gymcrm.dto.TraineeProfileResponse;
-import com.epam.gymcrm.dto.TraineeRegistrationRequest;
-import com.epam.gymcrm.dto.TraineeUpdateRequest;
+import com.epam.gymcrm.dto.trainee.TraineeProfileResponse;
+import com.epam.gymcrm.dto.trainee.TraineeRegistrationRequest;
+import com.epam.gymcrm.dto.trainee.TraineeUpdateRequest;
 import com.epam.gymcrm.entity.Trainee;
 import com.epam.gymcrm.entity.User;
 import com.epam.gymcrm.exception.EntityNotFoundException;
@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/trainees")
@@ -75,7 +73,7 @@ public class TraineeController {
         LOGGER.info("Trainee profile request received for username={}", username);
 
         Trainee trainee = gymFacade.findTraineeByUsername(username, password, username).orElseThrow(
-                () -> new EntityNotFoundException("Trainee" , username)
+                () -> new EntityNotFoundException("TraineeDtos" , username)
         );
 
         TraineeProfileResponse response = traineeMapper.toProfileResponse(trainee);
@@ -118,4 +116,6 @@ public class TraineeController {
 
         return ResponseEntity.ok().build();
     }
+
+
 }

@@ -1,20 +1,27 @@
-package com.epam.gymcrm.dto;
+package com.epam.gymcrm.dto.trainee;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Getter
-public class TrainerUpdateRequest {
+public class TraineeUpdateRequest {
+
+    @NotBlank(message = "Username is required")
+    private String username;
+
     @NotBlank(message = "firstName is required")
     private String firstName;
 
     @NotBlank(message = "lastName is required")
     private String lastName;
 
-    @NotBlank(message = "username is required")
-    private String username;
+    private LocalDate dateOfBirth;
 
-    @NotNull(message = "active can't be null")
+    private String address;
+
+    @NotNull(message = "active is required")
     private Boolean active;
 }
