@@ -260,4 +260,5 @@ public class TraineeService {
 
         return traineeRepository.save(trainee);
     }
+
 }

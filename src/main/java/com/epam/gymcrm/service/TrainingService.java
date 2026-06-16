@@ -68,7 +68,6 @@ public class TrainingService {
             String trainerPassword,
             String traineeUsername,
             String trainingName,
-            String trainingTypeName,
             LocalDate trainingDate,
             Integer trainingDuration
     ) {
@@ -76,7 +75,6 @@ public class TrainingService {
         validateParameter(trainerPassword);
         validateParameter(traineeUsername);
         validateParameter(trainingName);
-        validateParameter(trainingTypeName);
 
         if (trainingDate == null) {
             throw new ValidationException("Training date is null");
@@ -100,8 +98,7 @@ public class TrainingService {
         Trainee trainee = traineeRepository.findByUserUsername(traineeUsername)
                 .orElseThrow(() -> new EntityNotFoundException("trainee", traineeUsername));
 
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
-                .orElseThrow(() -> new EntityNotFoundException("trainingType", trainingTypeName));
+        TrainingType trainingType = trainer.getSpecialization();
 
         Training training = new Training(
                 trainingName,
@@ -194,5 +191,10 @@ public class TrainingService {
         if (parameter.isBlank()) {
             throw new ValidationException("Parameter should not be empty");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<TrainingType> getTrainingTypes() {
+        return trainingTypeRepository.findAll();
     }
 }

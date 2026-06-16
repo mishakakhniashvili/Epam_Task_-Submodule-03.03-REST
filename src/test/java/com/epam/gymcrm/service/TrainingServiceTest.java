@@ -74,7 +74,6 @@ class TrainingServiceTest {
                 "trainerPass",
                 "John.Smith",
                 "Morning Training",
-                "Fitness",
                 LocalDate.of(2026, 5, 10),
                 60
         );
@@ -107,7 +106,6 @@ class TrainingServiceTest {
                         "wrongPass",
                         "John.Smith",
                         "Morning Training",
-                        "Fitness",
                         LocalDate.of(2026, 5, 10),
                         60
                 ));
@@ -123,7 +121,6 @@ class TrainingServiceTest {
                         "trainerPass",
                         "John.Smith",
                         "Morning Training",
-                        "Fitness",
                         LocalDate.of(2026, 5, 10),
                         0
                 ));

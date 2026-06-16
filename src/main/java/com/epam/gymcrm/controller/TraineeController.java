@@ -2,24 +2,26 @@ package com.epam.gymcrm.controller;
 
 import com.epam.gymcrm.dto.ActivationRequest;
 import com.epam.gymcrm.dto.RegistrationResponse;
-import com.epam.gymcrm.dto.trainee.TraineeProfileResponse;
-import com.epam.gymcrm.dto.trainee.TraineeRegistrationRequest;
-import com.epam.gymcrm.dto.trainee.TraineeUpdateRequest;
+import com.epam.gymcrm.dto.trainee.*;
 import com.epam.gymcrm.dto.trainer.TrainerShortResponse;
 import com.epam.gymcrm.entity.Trainee;
 import com.epam.gymcrm.entity.Trainer;
+import com.epam.gymcrm.entity.Training;
 import com.epam.gymcrm.entity.User;
 import com.epam.gymcrm.exception.EntityNotFoundException;
 import com.epam.gymcrm.facade.GymFacade;
 import com.epam.gymcrm.mapper.TraineeMapper;
 import com.epam.gymcrm.mapper.TrainerMapper;
+import com.epam.gymcrm.mapper.TrainingMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,10 +36,13 @@ public class TraineeController {
 
     private final TrainerMapper trainerMapper;
 
-    public TraineeController(GymFacade gymFacade,  TraineeMapper traineeMapper,  TrainerMapper trainerMapper) {
+    private final TrainingMapper trainingMapper;
+
+    public TraineeController(GymFacade gymFacade,  TraineeMapper traineeMapper,  TrainerMapper trainerMapper,   TrainingMapper trainingMapper) {
         this.gymFacade = gymFacade;
         this.traineeMapper = traineeMapper;
         this.trainerMapper = trainerMapper;
+        this.trainingMapper = trainingMapper;
     }
 
     @PostMapping("/register")
@@ -82,7 +87,7 @@ public class TraineeController {
         LOGGER.info("Trainee profile request received for username={}", username);
 
         Trainee trainee = gymFacade.findTraineeByUsername(username, password, username).orElseThrow(
-                () -> new EntityNotFoundException("TraineeDtos" , username)
+                () -> new EntityNotFoundException("Trainee" , username)
         );
 
         TraineeProfileResponse response = traineeMapper.toProfileResponse(trainee);
@@ -107,7 +112,7 @@ public class TraineeController {
         );
         TraineeProfileResponse response = traineeMapper.toProfileResponse(trainee);
 
-        LOGGER.info("Trainer profile successfully updated for username={}", request.getUsername());
+        LOGGER.info("Trainee profile successfully updated for username={}", request.getUsername());
 
         return  ResponseEntity.ok(response);
     }
@@ -155,6 +160,57 @@ public class TraineeController {
 
         List<TrainerShortResponse> response = trainers.stream()
                 .map(trainerMapper::toShortResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/trainers")
+    public ResponseEntity<List<TrainerShortResponse>> updateTraineeTrainersList(
+            @RequestParam String password,
+            @Valid @RequestBody TraineeTrainersUpdateRequest request
+    ) {
+        LOGGER.info("Trainee trainers list update request received for username={}", request.getUsername());
+
+        Trainee trainee = gymFacade.updateTraineeTrainersList(
+                request.getUsername(),
+                password,
+                request.getTrainerUsernames()
+        );
+
+        List<TrainerShortResponse> response = trainee.getTrainers().stream()
+                .map(trainerMapper::toShortResponse)
+                .toList();
+
+        LOGGER.info("Trainee trainers list successfully updated for username={}", request.getUsername());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+    @GetMapping("/trainings")
+    public ResponseEntity<List<TraineeTrainingResponse>> getTraineeTrainings(
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(required = false) String trainerUsername,
+            @RequestParam(required = false) String trainingTypeName
+    ) {
+        LOGGER.info("Trainee trainings list request received for username={}", username);
+
+        List<Training> trainings = gymFacade.getTraineeTrainings(
+                username,
+                password,
+                fromDate,
+                toDate,
+                trainerUsername,
+                trainingTypeName
+        );
+
+        List<TraineeTrainingResponse> response = trainings.stream()
+                .map(trainingMapper::toTraineeTrainingResponse)
                 .toList();
 
         return ResponseEntity.ok(response);

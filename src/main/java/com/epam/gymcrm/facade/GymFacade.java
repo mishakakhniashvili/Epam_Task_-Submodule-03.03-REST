@@ -3,6 +3,7 @@ package com.epam.gymcrm.facade;
 import com.epam.gymcrm.entity.Trainee;
 import com.epam.gymcrm.entity.Trainer;
 import com.epam.gymcrm.entity.Training;
+import com.epam.gymcrm.entity.TrainingType;
 import com.epam.gymcrm.service.TraineeService;
 import com.epam.gymcrm.service.TrainerService;
 import com.epam.gymcrm.service.TrainingService;
@@ -96,7 +97,6 @@ public class GymFacade {
             String trainerPassword,
             String traineeUsername,
             String trainingName,
-            String trainingTypeName,
             LocalDate trainingDate,
             Integer trainingDuration
     ) {
@@ -105,7 +105,6 @@ public class GymFacade {
                 trainerPassword,
                 traineeUsername,
                 trainingName,
-                trainingTypeName,
                 trainingDate,
                 trainingDuration
         );
@@ -182,5 +181,9 @@ public class GymFacade {
         return trainerService.updateProfile(
                 username, password, firstName, lastName, active
         );
+    }
+
+    public List<TrainingType> getTrainingTypes() {
+        return trainingService.getTrainingTypes();
     }
 }
