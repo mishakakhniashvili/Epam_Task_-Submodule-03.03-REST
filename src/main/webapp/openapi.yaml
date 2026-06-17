@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  title: Gym CRM REST API
+  version: 1.0.0
+  description: REST API for Gym CRM system
+
+servers:
+  - url: /gym-crm
+
+paths:
+  /api/trainees/register:
+    post:
+      summary: Register trainee
+      tags: [Trainees]
+      responses:
+        '201':
+          description: Trainee registered successfully
+
+  /api/trainers/register:
+    post:
+      summary: Register trainer
+      tags: [Trainers]
+      responses:
+        '201':
+          description: Trainer registered successfully
+
+  /api/login:
+    get:
+      summary: Login user
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+
+  /api/password:
+    put:
+      summary: Change password
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Password changed successfully
+
+  /api/trainees/profile:
+    get:
+      summary: Get trainee profile
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainee profile returned
+    put:
+      summary: Update trainee profile
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainee profile updated
+    delete:
+      summary: Delete trainee profile
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainee profile deleted
+
+  /api/trainers/profile:
+    get:
+      summary: Get trainer profile
+      tags: [Trainers]
+      responses:
+        '200':
+          description: Trainer profile returned
+    put:
+      summary: Update trainer profile
+      tags: [Trainers]
+      responses:
+        '200':
+          description: Trainer profile updated
+
+  /api/trainees/status:
+    patch:
+      summary: Activate or deactivate trainee
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainee status updated
+
+  /api/trainers/status:
+    patch:
+      summary: Activate or deactivate trainer
+      tags: [Trainers]
+      responses:
+        '200':
+          description: Trainer status updated
+
+  /api/trainees/not-assigned-trainers:
+    get:
+      summary: Get active trainers not assigned to trainee
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainers returned
+
+  /api/trainees/trainers:
+    put:
+      summary: Update trainee trainers list
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainer list updated
+
+  /api/trainees/trainings:
+    get:
+      summary: Get trainee trainings
+      tags: [Trainees]
+      responses:
+        '200':
+          description: Trainee trainings returned
+
+  /api/trainers/trainings:
+    get:
+      summary: Get trainer trainings
+      tags: [Trainers]
+      responses:
+        '200':
+          description: Trainer trainings returned
+
+  /api/trainings:
+    post:
+      summary: Add training
+      tags: [Trainings]
+      responses:
+        '200':
+          description: Training added
+
+  /api/training-types:
+    get:
+      summary: Get training types
+      tags: [Trainings]
+      responses:
+        '200':
+          description: Training types returned
